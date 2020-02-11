@@ -4,7 +4,7 @@ const cors = require('cors');
 
 const dataRoutes = require('./routes/dataRoutes');
 
-const port = 5000;
+const port = 5001;
 const app = express();
 
 // parse application/x-www-form-urlencoded

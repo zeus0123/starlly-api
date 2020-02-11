@@ -3,6 +3,7 @@ const path = require('path');
 const csv = require('csv-parser');
 const fs = require('fs');
 const csvParser = csv(); 
+const es = require('event-stream');
 
 
 const csvPath = path.basename('./Site_Bittenahalli_raw_data.csv');
@@ -10,36 +11,36 @@ const csvPath = path.basename('./Site_Bittenahalli_raw_data.csv');
 
 exports.dataAnalysis = (req,res) => {
     
-   const data = [];
-
+   
+let data = [];
   
-   const fileStream  = fs.createReadStream(csvPath);
-
+ var fileStream =  fs.createReadStream(csvPath)
+   .on('error', () => {
+       // handle error
+   })
  
-  
-   csvParser.on('data',async (row) => {
-    csvParser.pause();   
-    fileStream.unpipe()
-       
-       const insertData = await csvData.query().insert({
-           parameter_one : row.Parameter1,
-           parameter_five : row.Parameter5
-       })
-       
-       setTimeout(() => {
-           csvParser.resume();
-           fileStream.pipe(csvParser);
-       },1000*60)
-      
+   .pipe(csv())
+   .on('data', (row) => {
+          data.push(row);  
    })
 
+   .on('end', () => {
+       console.log('finish');
+       
+        saveToDB(data);
 
+   })
+        
+    
 
-    csvParser.on('end', () => {
-           
-       console.log('finished');
       
-    })
+    
+}
 
-    fileStream.pipe(csvParser);
+const saveToDB = (data) => {
+    data.forEach((element,index) => {
+        setTimeout(() => {
+            console.log(element.Parameter1);
+        },index*3000) 
+    });
 }
