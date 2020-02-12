@@ -65,7 +65,7 @@ let power_outage = 0;
 
                 
                fileStream.resume();  
-          },2000)  
+          },2000 * 60)  
    })
 
    .on('end', () => {
@@ -143,14 +143,28 @@ exports.powerOutageTime = (req,res) => {
 
      PowerOutage.query().orderBy('created_at','desc').limit(1)
                 .then(powerOutage => {
+                       if(powerOutage.length > 0){
                         CsvData.query().where('id','>',powerOutage[0].data_id).where('is_power_outage',0).limit(1)
-                            .then(time => {
-                                if(time.length > 0){
-                                    var timeConsumed = moment(time[0].created_at,'DD/MM/YYYY HH:mm:ss').diff(moment(powerOutage[0].created_at,'DD/MM/YYYY HH:mm:ss'));
-                                    var d = moment.duration(timeConsumed);
-                                    console.log(d.format('minutes'))
-                                }
-                            })
+                        .then(time => {
+                            if(time.length > 0){
+                                var timeConsumed = moment(time[0].created_at,'DD/MM/YYYY HH:mm:ss').diff(moment(powerOutage[0].created_at,'DD/MM/YYYY HH:mm:ss'));
+                                var powerOutageInMin = timeConsumed/60000;
+                                return res.status(200).send({
+                                    time : powerOutageInMin
+                                })
+                                
+                            }else{
+                                return res.status(200).send({
+                                    time : 0
+                                })
+                            }
+                        })
+                       }else{
+                           return res.status(200).send({
+                               time : 0
+                           })
+                       }
+                        
                 })
     
 
@@ -162,7 +176,7 @@ exports.lastPowerOutage = async(req,res) => {
     return res.status(200).send(powerOutageTime);
 }
 
-exports.getAlertCount = async() => {
+exports.getAlertCount = async(req,res) => {
     const alertCount = await Alert.query().select(raw('count(*) as count'));
    
    
