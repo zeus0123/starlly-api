@@ -20,12 +20,10 @@
   "homepage": "https://github.com/zeus0123/starlly-api#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "csv": "^0.3.7",
     "csv-parser": "^2.3.2",
-    "event-stream": "^4.0.1",
     "express": "^4.17.1",
-    "fast-csv": "^4.0.2",
     "knex": "^0.20.9",
+    "moment": "^2.24.0",
     "mysql": "^2.18.1",
     "objection": "^2.1.2"
   },

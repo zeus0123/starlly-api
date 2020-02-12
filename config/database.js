@@ -7,8 +7,8 @@ const knex = Knex({
   connection: {
     host : '127.0.0.1',
     user : 'root',
-    password : 'arsenal#7',
-    database : 'starlly',
+    password : '123456',
+    database : 'test_starlly',
     
   }
 });
